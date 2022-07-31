@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { useQuery } from '@apollo/client';
-import { GET_POST_DETAIL } from 'src/queries/Queries';
+import { useMutation, useQuery } from '@apollo/client';
+import { CREATE_POST, GET_POST_DETAIL, UPDATE_POST } from 'src/query/Queries';
 import {
   Button, Form, InputGroup, Spinner,
 } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Formik } from 'formik';
 import SendPostSchema from './validation';
+import { useToast } from '../../wrappers/toastWrapper/ToastWrapper';
 
 interface Post {
   id?: string
@@ -16,6 +17,7 @@ interface Post {
 
 function EditPostPage() {
   const { id } = useParams<{ id: string }>();
+  const addToast = useToast();
   const navigate = useNavigate();
   const [post, setPost] = useState<Post>({ id, title: '', body: '' });
   const { loading } = useQuery(
@@ -24,9 +26,18 @@ function EditPostPage() {
       fetchPolicy: 'no-cache',
       variables: { id },
       skip: !id,
-      onCompleted: (data:{ post: Post }) => setPost(data.post),
+      onCompleted: (data:{ post: Post }) => {
+        const { id, title, body } = data.post;
+        setPost({ id, title, body });
+      },
     },
   );
+  const onCompleted = (data: { post: Post }) => {
+    addToast({ title: `Пост успешно ${id ? 'обновлён' : 'создан!'}`, text: data.post.title });
+    navigate(`/posts/${data.post.id}`);
+  };
+
+  const [sendPost] = useMutation(id ? UPDATE_POST : CREATE_POST, { onCompleted });
 
   if (loading) {
     return (
@@ -47,7 +58,7 @@ function EditPostPage() {
       <Formik
         initialValues={post}
         enableReinitialize
-        onSubmit={() => { }}
+        onSubmit={({ id, ...input }) => sendPost({ variables: { id, input } })}
         validationSchema={SendPostSchema}
       >
         {({

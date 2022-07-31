@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_ALL_TODOS } from 'src/queries/Queries';
+import { GET_TODOS } from 'src/query/Queries';
 import {
   Alert, Badge, Button, CloseButton,
 } from 'react-bootstrap';
@@ -20,7 +20,7 @@ interface Todo {
 
 function Todos() {
   const [page, setPage] = useState(0);
-  const { previousData, data = previousData, loading } = useQuery(GET_ALL_TODOS, {
+  const { previousData, data = previousData, loading } = useQuery(GET_TODOS, {
     fetchPolicy: 'no-cache',
     variables: { options: { paginate: { page: page + 1, limit: LIMIT_PAGE } } },
   });

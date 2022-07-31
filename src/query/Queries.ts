@@ -6,13 +6,18 @@ export const NameParts = gql`
         name
     }`;
 
-export const GET_ALL_POSTS = gql`
+export const PostParts = gql`
+    fragment PostParts on Post {
+        id
+        title
+        body
+    }`;
+
+export const GET_POSTS = gql`
 query ($options: PageQueryOptions) {
     posts(options: $options) {
         data {
-            id
-            title
-            body
+            ...PostParts
             user {
                 ...NameParts
             }
@@ -23,14 +28,13 @@ query ($options: PageQueryOptions) {
     }
 }
 ${NameParts}
+${PostParts}
 `;
 
 export const GET_POST = gql`
     query ($id: ID!) {
         post(id: $id) {
-            id
-            title
-            body
+            ...PostParts
             user {
                 ...NameParts
             }
@@ -45,23 +49,48 @@ export const GET_POST = gql`
         }
     }
     ${NameParts}
+    ${PostParts}
 `;
 
 export const GET_POST_DETAIL = gql`
     query ($id: ID!) {
         post(id: $id) {
-            id
-            title
-            body
-            user {
-                ...NameParts
-            }
+            ...PostParts
         }
     }
-    ${NameParts}
+    ${PostParts}
 `;
 
-export const GET_ALL_TODOS = gql`
+export const CREATE_POST = gql`
+    mutation (
+        $input: CreatePostInput!
+    ) {
+        post : createPost(input: $input) {
+            ...PostParts
+        } 
+    }
+    ${PostParts}
+`;
+
+export const UPDATE_POST = gql`
+    mutation mutation (
+        $id: ID!,
+        $input: UpdatePostInput!
+    ) {
+        post : updatePost(id: $id, input: $input) {
+            ...PostParts
+        }
+    }
+    ${PostParts}
+`;
+
+export const DELETE_POST = gql`
+    mutation ($id: ID!) {
+        deletePost(id: $id)
+    }
+`;
+
+export const GET_TODOS = gql`
     query ($options: PageQueryOptions) {
         todos(options: $options) {
             data {
@@ -72,34 +101,10 @@ export const GET_ALL_TODOS = gql`
                     ...NameParts
                 }
             }
-#            links {
-#                first {
-#                    limit
-#                    page
-#                }
-#            }
             meta {
                 totalCount
             }
         }
     }
     ${NameParts}
-`;
-
-export const PostById = '';
-
-export const UserPost = '';
-
-export const CreatePost = '';
-
-export const DELETE_POST = gql`
-mutation ($id: ID!) {
-  deletePost(id: $id)
-}
-`;
-
-export const DELETE_TODO = gql`
-    mutation ($id: ID!) {
-        deleteTodo(id: $id)
-    }
 `;

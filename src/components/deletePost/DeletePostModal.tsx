@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useMutation } from '@apollo/client';
 import { Spinner } from 'react-bootstrap';
-import { DELETE_POST } from '../../queries/Queries';
+import { DELETE_POST, GET_POSTS } from '../../query/Queries';
 import { useToast } from '../wrappers/toastWrapper/ToastWrapper';
 
 export type DeletePostModalProps = {
@@ -18,7 +18,10 @@ function DeletePostModal({ postId, postName, onClose }: DeletePostModalProps): J
     addToast({ title: 'Пост удалён!', text: postName });
     onClose();
   };
-  const [deletePost, { loading }] = useMutation(DELETE_POST, { onCompleted });
+  const [deletePost, { loading }] = useMutation(
+    DELETE_POST,
+    { onCompleted, refetchQueries: [GET_POSTS] },
+  );
 
   return (
     <Modal show onHide={onClose}>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_ALL_POSTS } from 'src/queries/Queries';
+import { GET_POSTS } from 'src/query/Queries';
 import {
   Badge, Button, Card, Spinner,
 } from 'react-bootstrap';
@@ -27,9 +27,9 @@ function Posts() {
   const [deletePost, setDeletePost] = useState<DeletePostModalProps>();
   const navigate = useNavigate();
   const { previousData, loading, data = loading ? previousData : undefined } = useQuery(
-    GET_ALL_POSTS,
+    GET_POSTS,
     {
-      fetchPolicy: 'no-cache',
+      fetchPolicy: 'cache-first',
       variables: { options: { paginate: { page: page + 1, limit: LIMIT_PAGE } } },
     },
   );

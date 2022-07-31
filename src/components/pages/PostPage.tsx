@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_POST } from 'src/queries/Queries';
+import { GET_POST } from 'src/query/Queries';
 import { Button, Spinner } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Avatar } from '../common';
@@ -32,7 +32,7 @@ function PostPage() {
   const { data, loading } = useQuery(
     GET_POST,
     {
-      fetchPolicy: 'no-cache',
+      fetchPolicy: 'cache-first',
       variables: { id },
     },
   );
