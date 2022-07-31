@@ -3,7 +3,7 @@ import { Container, Nav, Navbar } from 'react-bootstrap';
 import { Link, LinkProps, useMatch } from 'react-router-dom';
 
 function NavLink({ to, ...rest }: LinkProps & React.RefAttributes<HTMLAnchorElement>) {
-  const match = Boolean(useMatch({ path: to.toString() }));
+  const match = Boolean(useMatch({ path: to.toString(), end: false }));
   return (
     <Nav.Link active={match} as={Link} to={to} {...rest} />
   );

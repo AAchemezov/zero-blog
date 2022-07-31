@@ -25,6 +25,28 @@ query ($options: PageQueryOptions) {
 ${NameParts}
 `;
 
+export const GET_POST = gql`
+    query ($id: ID!) {
+        post(id: $id) {
+            id
+            title
+            body
+            user {
+                ...NameParts
+            }
+            comments {
+                data {
+                    id
+                    body
+                    name
+                    email
+                }
+            }
+        }
+    }
+    ${NameParts}
+`;
+
 export const GET_ALL_TODOS = gql`
     query ($options: PageQueryOptions) {
         todos(options: $options) {

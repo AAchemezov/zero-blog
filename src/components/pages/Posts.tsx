@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_POSTS } from 'src/queries/Queries';
 import { Badge, Button, Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import DeletePostModal, { DeletePostModalProps } from '../deletePost/DeletePostModal';
 import { Avatar, PagePagination } from '../common';
 
@@ -59,10 +60,12 @@ function Posts() {
                 <i className="material-icons md-18">close</i>
               </Button>
             </Card.Header>
-            <Card.Body>
-              <Card.Title>{post.title}</Card.Title>
-              <Card.Text>{post.body}</Card.Text>
-            </Card.Body>
+            <Link to={post.id} className="link-dark text-decoration-none">
+              <Card.Body>
+                <Card.Title>{post.title}</Card.Title>
+                <Card.Text>{post.body}</Card.Text>
+              </Card.Body>
+            </Link>
           </Card>
         ))}
       </div>
