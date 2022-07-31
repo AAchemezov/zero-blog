@@ -47,6 +47,20 @@ export const GET_POST = gql`
     ${NameParts}
 `;
 
+export const GET_POST_DETAIL = gql`
+    query ($id: ID!) {
+        post(id: $id) {
+            id
+            title
+            body
+            user {
+                ...NameParts
+            }
+        }
+    }
+    ${NameParts}
+`;
+
 export const GET_ALL_TODOS = gql`
     query ($options: PageQueryOptions) {
         todos(options: $options) {

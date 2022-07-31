@@ -1,10 +1,11 @@
 import React from 'react';
-import ApolloWrapper from 'src/components/ApolloWrapper/ApolloWrapper';
+import ApolloWrapper from 'src/components/wrappers/ApolloWrapper/ApolloWrapper';
+import ToastWrapper from 'src/components/wrappers/toastWrapper/ToastWrapper';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-
-import { PostPage, Posts, Todos } from '../pages';
+import {
+  EditPostPage, PostPage, Posts, Todos,
+} from '../pages';
 import Layout from '../layout/Layout';
-import ToastWrapper from '../toastWrapper/ToastWrapper';
 
 function App() {
   return (
@@ -15,6 +16,8 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route path="posts" element={<Posts />} />
               <Route path="posts/:id" element={<PostPage />} />
+              <Route path="posts/:id/edit" element={<EditPostPage />} />
+              <Route path="posts/new" element={<EditPostPage />} />
               <Route path="todos" element={<Todos />} />
             </Route>
           </Routes>

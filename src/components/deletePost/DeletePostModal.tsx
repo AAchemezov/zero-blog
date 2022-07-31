@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import { useMutation } from '@apollo/client';
 import { Spinner } from 'react-bootstrap';
 import { DELETE_POST } from '../../queries/Queries';
-import { useToast } from '../toastWrapper/ToastWrapper';
+import { useToast } from '../wrappers/toastWrapper/ToastWrapper';
 
 export type DeletePostModalProps = {
   postId: string

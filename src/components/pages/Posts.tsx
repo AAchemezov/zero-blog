@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_POSTS } from 'src/queries/Queries';
-import { Badge, Button, Card } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import {
+  Badge, Button, Card, Spinner,
+} from 'react-bootstrap';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import DeletePostModal, { DeletePostModalProps } from '../deletePost/DeletePostModal';
 import { Avatar, PagePagination } from '../common';
 
@@ -19,9 +21,11 @@ interface Post {
 }
 
 function Posts() {
-  const [page, setPage] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams({ page: '0' });
+  const page = +(searchParams.get('page') || 0);
+  const setPage = (pageNumber: number) => setSearchParams(({ page: String(pageNumber) }));
   const [deletePost, setDeletePost] = useState<DeletePostModalProps>();
-
+  const navigate = useNavigate();
   const { previousData, loading, data = loading ? previousData : undefined } = useQuery(
     GET_ALL_POSTS,
     {
@@ -37,11 +41,26 @@ function Posts() {
           <h1 className="display-4 me-2">Посты </h1>
           <Badge pill bg="secondary">{data?.posts?.meta?.totalCount}</Badge>
         </div>
-        <Button variant="light" className=" d-flex align-items-center">
+        <Button
+          variant="light"
+          className=" d-flex align-items-center"
+          onClick={() => navigate('new')}
+        >
           <i className="material-icons">add</i>
           создать
         </Button>
       </div>
+      {loading && !data
+        && (
+        <div className="d-flex justify-content-center m-5">
+          <Spinner
+            as="span"
+            animation="border"
+            role="status"
+            aria-hidden="true"
+          />
+        </div>
+        )}
       <div className={`flex-column ${(loading) && 'opacity-25'}`}>
         { data?.posts?.data.map((post: Post) => (
           <Card className="my-4" key={post.id}>

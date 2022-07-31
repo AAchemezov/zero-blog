@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_POST } from 'src/queries/Queries';
 import { Button, Spinner } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Avatar } from '../common';
 import Comments from '../comments/Comments';
+import DeletePostModal, { DeletePostModalProps } from '../deletePost/DeletePostModal';
 
 interface Post {
   id: string
@@ -26,6 +27,8 @@ interface Post {
 
 function PostPage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [deletePost, setDeletePost] = useState<DeletePostModalProps>();
   const { data, loading } = useQuery(
     GET_POST,
     {
@@ -37,11 +40,10 @@ function PostPage() {
 
   if (loading && !post) {
     return (
-      <div className="d-flex justify-content-center">
+      <div className="d-flex justify-content-center m-5">
         <Spinner
           as="span"
           animation="border"
-          size="sm"
           role="status"
           aria-hidden="true"
         />
@@ -59,14 +61,27 @@ function PostPage() {
         {post.body}
       </p>
       <div className="d-flex justify-content-end gap-1 ">
-        <Button variant="light" className=" d-flex align-items-center">
+        <Button
+          variant="light"
+          className=" d-flex align-items-center"
+          onClick={() => navigate('edit')}
+        >
           <i className="material-icons">edit</i>
         </Button>
-        <Button variant="light" className=" d-flex align-items-center">
+        <Button
+          variant="light"
+          className=" d-flex align-items-center"
+          onClick={() => setDeletePost({
+            postId: post.id,
+            postName: post.title,
+            onClose: () => navigate('/posts'),
+          })}
+        >
           <i className="material-icons">delete</i>
         </Button>
       </div>
       <Comments comments={post.comments.data} />
+      {deletePost && <DeletePostModal {...deletePost} />}
     </div>
   );
 }

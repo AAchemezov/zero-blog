@@ -25,10 +25,6 @@ function Todos() {
     variables: { options: { paginate: { page: page + 1, limit: LIMIT_PAGE } } },
   });
 
-  // const [deleteTodo, deleteTodoQuery] = useMutation(DELETE_TODO,
-  // { onCompleted: () => createToast('Задача успешно удалёна') });
-  // const total = Math.floor((data?.posts?.meta?.totalCount || 0) / LIMIT_PAGE) + 1;
-
   return (
     <div>
       <div className="d-flex align-items-center justify-content-between">
@@ -52,9 +48,7 @@ function Todos() {
                 <CloseButton />
               </div>
               <Alert.Heading className="mb-5 mt-4 mx-2">{todo.title}</Alert.Heading>
-              <div className="d-flex align-items-center justify-content-end">
-                <Avatar {...todo.user} />
-              </div>
+              <Avatar {...todo.user} />
             </Alert>
           </div>
         ))}
@@ -65,7 +59,6 @@ function Todos() {
         limitPage={LIMIT_PAGE}
         totalCount={data?.todos?.meta?.totalCount}
       />
-      {/* {deletePost && <DeletePostModal {...deletePost} />} */}
     </div>
   );
 }
