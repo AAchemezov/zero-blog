@@ -13,7 +13,7 @@ function Navigation() {
   return (
     <Navbar bg="dark" expand="lg" variant="dark" sticky="top" className="rounded-bottom">
       <Container>
-        <Navbar.Brand as={Link} to="/">
+        <Navbar.Brand as={Link} to="/posts">
           <div className="d-flex align-items-center">
             <i className="material-icons md-24">egg</i>
             zero-blog

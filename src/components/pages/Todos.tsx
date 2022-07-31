@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
-import { DELETE_TODO, GET_ALL_TODOS } from 'src/queries/Queries';
-import createToast from 'src/tools/toast';
+import { useQuery } from '@apollo/client';
+import { GET_ALL_TODOS } from 'src/queries/Queries';
+import {
+  Alert, Badge, Button, CloseButton,
+} from 'react-bootstrap';
+import { Avatar, PagePagination } from '../common';
 
-const LIMIT_PAGE = 8;
+const LIMIT_PAGE = 25;
 
 interface Todo {
   id: string
   title: string
+  completed: boolean
   user: {
     username: string,
     name: string
@@ -20,52 +24,48 @@ function Todos() {
     fetchPolicy: 'no-cache',
     variables: { options: { paginate: { page: page + 1, limit: LIMIT_PAGE } } },
   });
-  const [deleteTodo, deleteTodoQuery] = useMutation(DELETE_TODO, { onCompleted: () => createToast('Задача успешно удалёна') });
-  const total = Math.floor((data?.posts?.meta?.totalCount || 0) / LIMIT_PAGE) + 1;
+
+  // const [deleteTodo, deleteTodoQuery] = useMutation(DELETE_TODO,
+  // { onCompleted: () => createToast('Задача успешно удалёна') });
+  // const total = Math.floor((data?.posts?.meta?.totalCount || 0) / LIMIT_PAGE) + 1;
 
   return (
     <div>
-      <div className={`progress ${!loading && !deleteTodoQuery.loading ? 'hide' : ''}`}>
-        <div className="indeterminate" />
+      <div className="d-flex align-items-center justify-content-between">
+        <div className="d-flex align-items-center">
+          <h1 className="display-4 me-2">Задачи</h1>
+          <Badge pill bg="secondary">{data?.todos?.meta?.totalCount}</Badge>
+        </div>
+        <Button variant="light" className=" d-flex align-items-center">
+          <i className="material-icons">add</i>
+          создать
+        </Button>
       </div>
-      <ul className={`collection with-header z-depth-1 ${loading ? 'disabled' : ''}`}>
-        <li className="collection-header"><h4>Задачи</h4></li>
-        {data?.todos?.data.map((todo: Todo) => (
-          <li className="collection-item avatar hoverable post" key={todo.id}>
-            <img className="circle" src={`https://avatars.dicebear.com/api/bottts/${todo.user.username}.svg?size=36`} alt={todo.user.username} />
-            <div className="title purple-text text-darken-1">{todo.user.name}</div>
-            <div className="row">
-              <h5 className="postTitle red-text text-lighten-2 truncate">{todo.title}</h5>
-              {/* <p className="truncate grey-text text-darken-2">{todo.body}</p> */}
-            </div>
-            <div className="secondary-content" style={{ height: '100%' }}>
-              {/* <a href="#!" className="row"><i className="material-icons">edit</i></a> */}
-              <a href="" className="row" onClick={() => deleteTodo({ variables: { id: todo.id } })}>
-                <i className="material-icons red-text button text-lighten-1">
-                  delete
+      <div className={`row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 ${(loading) && 'opacity-25'}`}>
+        { data?.todos?.data.map((todo: Todo) => (
+          <div className="p-2" key={todo.id}>
+            <Alert className="p-2" variant={todo.completed ? 'success' : 'warning'}>
+              <div className="d-flex align-items-center justify-content-between">
+                <i className="material-icons">
+                  {todo.completed ? 'task_alt' : 'schedule'}
                 </i>
-              </a>
-            </div>
-          </li>
+                <CloseButton />
+              </div>
+              <Alert.Heading className="mb-5 mt-4 mx-2">{todo.title}</Alert.Heading>
+              <div className="d-flex align-items-center justify-content-end">
+                <Avatar {...todo.user} />
+              </div>
+            </Alert>
+          </div>
         ))}
-      </ul>
-      <ul className="pagination right">
-        <li className={page === 0 ? 'disabled' : 'waves-effect'}>
-          <a href="" onClick={() => page !== 0 && setPage((oldPage) => oldPage - 1)}>
-            <i className="material-icons">chevron_left</i>
-          </a>
-        </li>
-        {Array.from(Array(total).keys()).map((index) => (
-          <li className={page === index ? 'active' : 'waves-effect'} key={index}>
-            <a href="" onClick={() => setPage(index)}>{index + 1}</a>
-          </li>
-        ))}
-        <li className={page === total - 1 ? 'disabled' : 'waves-effect'}>
-          <a href="" onClick={() => page !== total - 1 && setPage((oldPage) => oldPage + 1)}>
-            <i className="material-icons">chevron_right</i>
-          </a>
-        </li>
-      </ul>
+      </div>
+      <PagePagination
+        page={page}
+        onChange={setPage}
+        limitPage={LIMIT_PAGE}
+        totalCount={data?.todos?.meta?.totalCount}
+      />
+      {/* {deletePost && <DeletePostModal {...deletePost} />} */}
     </div>
   );
 }

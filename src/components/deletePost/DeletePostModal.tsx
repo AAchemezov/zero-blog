@@ -14,12 +14,11 @@ export type DeletePostModalProps = {
 
 function DeletePostModal({ postId, postName, onClose }: DeletePostModalProps): JSX.Element {
   const addToast = useToast();
-  const [deletePost, { loading }] = useMutation(DELETE_POST, {
-    onCompleted: () => {
-      addToast({ title: 'Пост удалён!', text: postName });
-      onClose();
-    },
-  });
+  const onCompleted = () => {
+    addToast({ title: 'Пост удалён!', text: postName });
+    onClose();
+  };
+  const [deletePost, { loading }] = useMutation(DELETE_POST, { onCompleted });
 
   return (
     <Modal show onHide={onClose}>

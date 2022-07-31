@@ -10,6 +10,7 @@
   "rules": {
     "no-console": ["warn", { "allow": ["warn", "error"] }],
     "jsx-a11y/anchor-is-valid": "off",
-    "react/jsx-props-no-spreading": "off"
+    "react/jsx-props-no-spreading": "off",
+    "react/require-default-props": "off"
   }
 }

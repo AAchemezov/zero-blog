@@ -36,6 +36,12 @@ export const GET_ALL_TODOS = gql`
                     ...NameParts
                 }
             }
+#            links {
+#                first {
+#                    limit
+#                    page
+#                }
+#            }
             meta {
                 totalCount
             }

@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_POSTS } from 'src/queries/Queries';
-import {
-  Badge,
-  Button, Card, Container, Pagination,
-} from 'react-bootstrap';
+import { Badge, Button, Card } from 'react-bootstrap';
 import DeletePostModal, { DeletePostModalProps } from '../deletePost/DeletePostModal';
+import { Avatar, PagePagination } from '../common';
 
-const LIMIT_PAGE = 15;
+const LIMIT_PAGE = 20;
 
 interface Post {
   id: string
@@ -21,6 +19,8 @@ interface Post {
 
 function Posts() {
   const [page, setPage] = useState(0);
+  const [deletePost, setDeletePost] = useState<DeletePostModalProps>();
+
   const { previousData, loading, data = loading ? previousData : undefined } = useQuery(
     GET_ALL_POSTS,
     {
@@ -28,8 +28,6 @@ function Posts() {
       variables: { options: { paginate: { page: page + 1, limit: LIMIT_PAGE } } },
     },
   );
-  const [deletePost, setDeletePost] = useState<DeletePostModalProps>();
-  const total = Math.floor((data?.posts?.meta?.totalCount || 0) / LIMIT_PAGE) + 1;
 
   return (
     <div>
@@ -47,13 +45,7 @@ function Posts() {
         { data?.posts?.data.map((post: Post) => (
           <Card className="my-4" key={post.id}>
             <Card.Header className="d-flex align-items-center justify-content-between p-2">
-              <div className="d-flex align-items-center">
-                <img className="me-1 rounded-1" src={`https://avatars.dicebear.com/api/initials/${post.user.username}.svg?size=24`} alt={post.user.name} />
-                <span className="link-primary">
-                  @
-                  {post.user.username}
-                </span>
-              </div>
+              <Avatar {...post.user} />
               <Button
                 variant="light"
                 size="sm"
@@ -64,9 +56,7 @@ function Posts() {
                   onClose: () => setDeletePost(undefined),
                 })}
               >
-                <i className="material-icons md-18">
-                  close
-                </i>
+                <i className="material-icons md-18">close</i>
               </Button>
             </Card.Header>
             <Card.Body>
@@ -76,24 +66,12 @@ function Posts() {
           </Card>
         ))}
       </div>
-      <div style={{ height: '100px' }} />
-      <Container className="fixed-bottom rounded-2 bg-body pt-2">
-        <Pagination className="float-end">
-          <Pagination.Prev
-            disabled={page === 0}
-            onClick={() => setPage((oldPage) => oldPage - 1)}
-          />
-          {Array.from(Array(total).keys()).map((index) => (
-            <Pagination.Item active={page === index} key={index} onClick={() => setPage(index)}>
-              {index + 1}
-            </Pagination.Item>
-          ))}
-          <Pagination.Next
-            disabled={page === total - 1}
-            onClick={() => setPage((oldPage) => oldPage + 1)}
-          />
-        </Pagination>
-      </Container>
+      <PagePagination
+        page={page}
+        onChange={setPage}
+        limitPage={LIMIT_PAGE}
+        totalCount={data?.posts?.meta?.totalCount}
+      />
       {deletePost && <DeletePostModal {...deletePost} />}
     </div>
   );
