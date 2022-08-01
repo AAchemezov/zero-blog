@@ -57,7 +57,7 @@ function PostPage() {
         <Avatar {...post.user} />
         <h3 className="mt-1">{post.title}</h3>
       </div>
-      <p className="my-4">
+      <p className="my-4 pre-wrap">
         {post.body}
       </p>
       <div className="d-flex justify-content-end gap-1 ">

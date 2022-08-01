@@ -21,7 +21,7 @@ function Comments({ comments }:{ comments:Comment[] }) {
             <div className="d-flex align-items-start justify-content-between p-2">
               <Card.Body className="pb-0">
                 <Card.Title>{comment.name}</Card.Title>
-                <Card.Text>{comment.body}</Card.Text>
+                <Card.Text className="pre-wrap">{comment.body}</Card.Text>
               </Card.Body>
               <Button
                 variant="light"
